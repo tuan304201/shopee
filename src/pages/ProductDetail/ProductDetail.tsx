@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import productApi from 'src/apis/product.api'
 import purchaseApi from 'src/apis/purchases.api'
 import Quantity from 'src/components/Quantity'
 import { purchaseStatus } from 'src/constants/purchases'
+import { AppContext } from 'src/contexts/app.context'
 import { ProductListConfig } from 'src/types/product.type'
 import { discountSale, formatCurrency, formatNumberToSocialStyle, getIdFromNameId } from 'src/utils/utils'
 import Product from '../ProductList/components/Product'
@@ -28,6 +29,7 @@ export default function ProductDetail() {
     () => (product ? product.images.slice(...currentIndexImage) : []),
     [product, currentIndexImage]
   )
+  const { isAuthen } = useContext(AppContext)
 
   const navigate = useNavigate()
 
@@ -40,6 +42,10 @@ export default function ProductDetail() {
   const addToCartMutation = useMutation(purchaseApi.addToCart)
 
   const addToCart = () => {
+    if (!isAuthen) {
+      navigate('/login')
+      return isAuthen
+    }
     addToCartMutation.mutate(
       { product_id: product?._id as string, buy_count: buyCount },
       {
@@ -70,6 +76,10 @@ export default function ProductDetail() {
   }
 
   const buyNow = async () => {
+    if (!isAuthen) {
+      navigate('/login')
+      return isAuthen
+    }
     const res = await addToCartMutation.mutateAsync({ product_id: product?._id as string, buy_count: buyCount })
     const purchase = res.data.data
     navigate('/cart', {

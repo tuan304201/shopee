@@ -29,28 +29,30 @@ function RejectedRouter() {
 export default function useRouterElements() {
   const routerElement = useRoutes([
     {
-      path: '/',
-      index: true,
-      element: (
-        <MainLayout>
-          <Suspense>
-            <ProductList />
-          </Suspense>
-        </MainLayout>
-      )
-    },
-
-    { path: '*', element: <Navigate to='/' replace /> },
-
-    {
-      path: ':nameId',
-      element: (
-        <MainLayout>
-          <Suspense>
-            <ProductDetail />
-          </Suspense>
-        </MainLayout>
-      )
+      path: '',
+      element: <RejectedRouter />,
+      children: [
+        {
+          path: '/register',
+          element: (
+            <RegisterLayout>
+              <Suspense>
+                <Register />
+              </Suspense>
+            </RegisterLayout>
+          )
+        },
+        {
+          path: '/login',
+          element: (
+            <RegisterLayout>
+              <Suspense>
+                <Login />
+              </Suspense>
+            </RegisterLayout>
+          )
+        }
+      ]
     },
 
     {
@@ -107,31 +109,29 @@ export default function useRouterElements() {
     },
 
     {
-      path: '',
-      element: <RejectedRouter />,
-      children: [
-        {
-          path: '/register',
-          element: (
-            <RegisterLayout>
-              <Suspense>
-                <Register />
-              </Suspense>
-            </RegisterLayout>
-          )
-        },
-        {
-          path: '/login',
-          element: (
-            <RegisterLayout>
-              <Suspense>
-                <Login />
-              </Suspense>
-            </RegisterLayout>
-          )
-        }
-      ]
-    }
+      path: '/',
+      index: true,
+      element: (
+        <MainLayout>
+          <Suspense>
+            <ProductList />
+          </Suspense>
+        </MainLayout>
+      )
+    },
+
+    {
+      path: ':nameId',
+      element: (
+        <MainLayout>
+          <Suspense>
+            <ProductDetail />
+          </Suspense>
+        </MainLayout>
+      )
+    },
+
+    { path: '*', element: <Navigate to='/' replace /> }
   ])
   return routerElement
 }
